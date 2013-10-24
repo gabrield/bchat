@@ -9,11 +9,16 @@
 
 #include <communication.h>
 
-void *listen_net(void *data){
-  Communication *comm = new Communication(3310);
+Communication *comm = NULL;
+
+
+
+void *listen_net(void *data)
+{
+
   char *msg;
-  
   Fl_Text_Display *msg_dsp = (Fl_Text_Display *)data;
+
   while(1)
   {
     msg = comm->Listen();
@@ -21,32 +26,27 @@ void *listen_net(void *data){
     msg_dsp->insert(msg);
     msg_dsp->insert("\n");
     Fl::check();
-  }
-  
+  }  
 }
-
-
 
 
 int main() {
   Fl_Window *win = new Fl_Window(0, 0, 640, 480, "BChat");
   Fl_Text_Buffer  *dsp_buf  = new Fl_Text_Buffer;
   Fl_Text_Buffer  *msg_buf  = new Fl_Text_Buffer;
-  Fl_Text_Editor  *msg_out   = new Fl_Text_Editor(10, 370, 530, 100);
+  Fl_Text_Editor  *msg_out  = new Fl_Text_Editor(10, 370, 530, 100);
   Fl_Text_Display *msg_dsp  = new Fl_Text_Display(10, 10, 620, 340);
   Fl_Button       *send_bnt = new Fl_Button(550, 380, 80, 80, "Send");
+  comm                      = new Communication(3310);
   
   msg_out->wrap_mode(Fl_Text_Editor::WRAP_AT_BOUNDS, 0);
   
   msg_out->buffer(dsp_buf);
   msg_dsp->buffer(msg_buf);
   
-  
-  
   pthread_t thread_listen;
   pthread_create(&thread_listen, NULL, listen_net, (void*)msg_dsp);
   
-
   win->show();
   
   return Fl::run(); 
