@@ -16,9 +16,28 @@ Communication::Communication(int port)
   my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   
   if (bind(sockfd, (struct sockaddr* ) &my_addr, sizeof(my_addr))==-1)
+  {
     perror("bind");
+    exit(0);
+  }
   else
     printf("Server : bind() successful\n");
+    
+    
+  //SENDER SECTION
+  
+  bcast_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  broadcastEnable = 1;
+  ret = setsockopt(bcast_sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
+
+
+  if(bcast_sock < 0)
+      return;
+
+  memset(&send_addr, '\0', sizeof(struct sockaddr_in));
+  send_addr.sin_family = AF_INET;
+  send_addr.sin_port = (in_port_t)htons(port);
+  send_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);  
 }
   
   
@@ -35,6 +54,10 @@ Communication::Communication(int port)
   }
   
   
-  void Communication::Send(string *msg){
+  void Communication::Send(const char *msg){
+
+  if(sendto(bcast_sock, msg, strlen(msg), 0, (struct sockaddr *)&send_addr, sizeof(struct sockaddr_in)) < 0)
+    perror("sendto");
+    
   }
   

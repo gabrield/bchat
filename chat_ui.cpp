@@ -12,8 +12,19 @@
 Communication *comm = NULL;
 
 
+void send_data(Fl_Widget*, void *txt_edtr)
+{
+  Fl_Text_Buffer *msg_out = (Fl_Text_Buffer*)txt_edtr;
+ 
+  //printf("MSGL = %s\n", msg_out->text());
+  comm->Send((char*)msg_out->text());
+  //Fl::check();
+  //msg_out->text("");
+  
+  
+}
 
-void *listen_net(void *data)
+void *listen_data(void *data)
 {
 
   char *msg;
@@ -36,7 +47,7 @@ int main() {
   Fl_Text_Buffer  *msg_buf  = new Fl_Text_Buffer;
   Fl_Text_Editor  *msg_out  = new Fl_Text_Editor(10, 370, 530, 100);
   Fl_Text_Display *msg_dsp  = new Fl_Text_Display(10, 10, 620, 340);
-  Fl_Button       *send_bnt = new Fl_Button(550, 380, 80, 80, "Send");
+  Fl_Button       *send_btn = new Fl_Button(550, 380, 80, 80, "Send");
   comm                      = new Communication(3310);
   
   msg_out->wrap_mode(Fl_Text_Editor::WRAP_AT_BOUNDS, 0);
@@ -45,7 +56,10 @@ int main() {
   msg_dsp->buffer(msg_buf);
   
   pthread_t thread_listen;
-  pthread_create(&thread_listen, NULL, listen_net, (void*)msg_dsp);
+  pthread_create(&thread_listen, NULL, listen_data, (void*)msg_dsp);
+  
+  send_btn->callback(send_data, (void*)dsp_buf);
+  
   
   win->show();
   
