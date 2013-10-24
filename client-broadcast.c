@@ -26,7 +26,7 @@ int main(void)
 {
     struct sockaddr_in my_addr, cli_addr;
     int sockfd, i; 
-    socklen_t slen=sizeof(cli_addr);
+    socklen_t slen = sizeof(cli_addr);
     char buf[BUFLEN];
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))==-1)
