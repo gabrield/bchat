@@ -61,3 +61,12 @@ Communication::Communication(int port)
     
   }
   
+  
+  ~Communication::Communication()
+  {
+    close(sockfd);
+    close(bcast_sock);
+  }
+  
+  
+  
