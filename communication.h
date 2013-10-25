@@ -19,12 +19,14 @@
 using namespace std;
 
 
+#define MSG_LEN 1024
+
 
 class Communication {
     struct sockaddr_in my_addr, cli_addr, send_addr;
     int sockfd, i; 
     socklen_t slen;
-    char buf[1024];
+    char buf[MSG_LEN];
     
     int bcast_sock;
     int broadcastEnable;
@@ -38,6 +40,8 @@ class Communication {
     char *Listen();
     void Send(const char *);
     void Close();
+    int MaxMsgLength() { return MSG_LEN; }
+    
 };
 
 
